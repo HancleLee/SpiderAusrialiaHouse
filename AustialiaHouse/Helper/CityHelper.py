@@ -52,6 +52,21 @@ def getItemWith(items, url):
             return it
     return {}
 
+def getItemWithStreet(items, street) :
+    for it in items:
+        have_street = False
+        for key in it:
+            if key == "street":
+                have_street = True
+                break
+        if have_street:
+            it_url = it["street"]
+            if len(it_url) > 0:
+                if street in it_url:
+                    # print('sdfsddddddd', street, it)
+                    return it
+    return {}
+
 # 根据街道名来匹配大区域,返回大区域
 def getBigAreaWith(items, street):
     for it in items:

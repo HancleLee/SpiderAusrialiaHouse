@@ -5,7 +5,7 @@ import scrapy
 import xlrd
 from scrapy import FormRequest
 
-from AustialiaHouse.Helper.CityHelper import au_area_url, kCityDomain, getItemWith, getBigAreaWith
+from AustialiaHouse.Helper.CityHelper import au_area_url, kCityDomain, getItemWith, getBigAreaWith, getItemWithStreet
 from AustialiaHouse.config.env import IS_DEV
 from AustialiaHouse.items import Postcode
 
@@ -44,6 +44,9 @@ class City(scrapy.Spider):
         pcItem = Postcode()
 
         target = response.xpath('//table[@id="browser"]')
+        if len(target)==0:
+            print('----- auth error!! ----')
+            return
         table_list = target.xpath('//table[@class="list2"]')
         tr_items = table_list.xpath('//tr[@itemscope]')
         # 获取下一页的数据
@@ -137,7 +140,10 @@ class City(scrapy.Spider):
                     pcItem["href"] = href
                 if postcode:
                     pcItem["postcode"] = postcode
-                pc_items = getItemWith(self.au_items, url=response.url)
+                # pc_items = getItemWith(self.au_items, url=response.url)
+                pc_items = getItemWithStreet(self.au_items, name)
+
+
                 addedBigArea = False
                 for k, v in pc_items.items():
                     if k == "city":
